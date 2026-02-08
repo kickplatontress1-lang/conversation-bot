@@ -2,10 +2,8 @@ import telebot
 from telebot import formatting
 from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
 from bot_logic import gen_pass, gen_emodji, flip_coin
-    
-# Замени 'TOKEN' на токен твоего бота
-# Этот токен ты получаешь от BotFather, чтобы бот мог работать
-bot = telebot.TeleBot("8536758046:AAFMW9-_vXgNiTv05bWq2I454U3PTQN0tgw")
+
+bot = telebot.TeleBot("your token here")
     
 @bot.message_handler(commands=['start'])
 def send_hello(message):
