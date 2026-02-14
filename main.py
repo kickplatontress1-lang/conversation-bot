@@ -2,16 +2,26 @@ import telebot
 from telebot import formatting
 from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
 from bot_logic import gen_pass, gen_emodji, flip_coin
-
-bot = telebot.TeleBot("your token here")
+import os
+import random
+import requests
+# use pip install pyTelegramBotAPI
+# Get token from BotFather
+bot = telebot.TeleBot("token here")
     
+def get_duck_image_url():    
+    url = 'https://random-d.uk/api/random'
+    res = requests.get(url)
+    data = res.json()
+    return data['url']
+
 @bot.message_handler(commands=['start'])
 def send_hello(message):
     bot.reply_to(message, "Привет! Как дела?", reply_markup=gen_markup())
     
 @bot.message_handler(commands=['countiue'])
 def send_good(message):
-    bot.reply_to(message, "Команды: /bye - **прощание**, /pass - **генерация**, /emodji - **рандомный эмодзи**, /coin - **перевернуть монетку**, /format - **формат текста**")
+    bot.reply_to(message, "Команды: /bye - прощание, /pass - генерация, /emodji - рандомный эмодзи, /coin - перевернуть монетку, /format - формат текста, /mem - все мемы, /randmem - рандомный мем, /animals - мемы про животных, /duck - картинки уток")
 
 @bot.message_handler(commands=['bye'])
 def send_bye(message):
@@ -91,6 +101,36 @@ def callback_query(call):
         bot.answer_callback_query(call.id, "Очень приятно!! /countiue")
     elif call.data == "cb_bye":
         bot.answer_callback_query(call.id, "Пока! Удачи!")
+
+@bot.message_handler(commands=['mem'])
+def send_mem(message):
+    with open('images/mem1.jpeg', 'rb') as f:  
+        bot.send_photo(message.chat.id, f)  
+    with open('images/mem2.jpeg', 'rb') as f:  
+        bot.send_photo(message.chat.id, f)  
+    with open('images/mem3.png', 'rb') as f:  
+        bot.send_photo(message.chat.id, f)  
+
+@bot.message_handler(commands=['animals'])
+def send_animals(message):
+    with open('images/mem4.png', 'rb') as f:  
+        bot.send_photo(message.chat.id, f)  
+    with open('images/mem5.png', 'rb') as f:  
+        bot.send_photo(message.chat.id, f)  
+    with open('images/mem6.png', 'rb') as f:  
+        bot.send_photo(message.chat.id, f)  
+
+@bot.message_handler(commands=['randmem'])
+def send_randmem(message):
+    img_name = random.choice(os.listdir('images'))
+    with open(f'images/{img_name}', 'rb') as f:  
+        bot.send_photo(message.chat.id, f)  
+
+@bot.message_handler(commands=['duck'])
+def send_duck(message):
+    '''По команде duck вызывает функцию get_duck_image_url и отправляет URL изображения утки'''
+    image_url = get_duck_image_url()
+    bot.reply_to(message, image_url)
 
 @bot.message_handler(func=lambda message: True)
 def echo_all(message):
